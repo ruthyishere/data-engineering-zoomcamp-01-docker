@@ -1,0 +1,9 @@
+docker run -it --rm \
+    taxi_ingest:v001 \
+    --pg-user=root \
+    --pg-pass=root \
+    --pg-host=localhost \
+    --pg-port=5432 \
+    --pg-db=ny_taxi \
+    --tablename=yellow_taxi_trips_2021_1 \
+    --chunksize=100000

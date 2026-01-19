@@ -22,9 +22,9 @@ RUN uv sync --locked
 
 
 ## Copy the pipeline.py file into the working directory in the container
-COPY pipeline.py . 
+COPY ingest_data.py . 
 
-ENTRYPOINT ["python", "pipeline.py"]
+ENTRYPOINT ["python", "ingest_data.py"]
 
 # ## Set the entrypoint to run the pipeline.py script using uv
 # ENTRYPOINT ["uv", "run", "python", "pipeline.py"]

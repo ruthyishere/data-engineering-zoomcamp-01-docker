@@ -7,6 +7,10 @@ from sqlalchemy import create_engine
 
 from tqdm.auto import tqdm
 
+import click # to get params from cli 
+
+
+
 
 dtype = {
     "VendorID": "Int64",
@@ -33,24 +37,35 @@ parse_dates = [
 ]
 
 
-def run ():
-    pg_user = "root"
-    pg_password = "root"
-    pg_host = "localhost"
-    pg_db = "ny_taxi"
-    pg_port = "5432"
+@click.command() # allows us to run the function from the command line
+@click.option('--pg-user', help='Postgres username', default='root')
+@click.option('--pg-pass', help='Postgres password', default='root')
+@click.option('--pg-host', help='Postgres host', default='localhost')
+@click.option('--pg-port', help='Postgres port', default='5432')
+@click.option('--pg-db', help='Postgres database name', default='ny_taxi')
+@click.option('--year', help='Year of the data to ingest', default=2021, type=int)
+@click.option('--month', help='Month of the data to ingest', default=1, type=int)
+@click.option('--chunksize', help='Number of rows to process at a time', default=100000, type=int)
+@click.option('--tablename', help='Name of the table to write data to', default='yellow_taxi_data')
 
-    year = 2021
-    month = 1
+def run (pg_user, pg_pass, pg_host, pg_port, pg_db, year, month, chunksize, tablename):
+    # pg_user = "root"
+    # pg_password = "root"
+    # pg_host = "localhost"
+    # pg_db = "ny_taxi"
+    # pg_port = "5432"
 
-    tablename = "yellow_taxi_data"
+    # year = 2021
+    # month = 1
 
-    chunksize = 100000
+    # tablename = "yellow_taxi_data"
+
+    # chunksize = 100000
 
     prefix = 'https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/'
     url = f'{prefix}yellow_tripdata_{year:04d}-{month:02d}.csv.gz'
 
-    engine = create_engine(f'postgresql://{pg_user}:{pg_password}@{pg_host}:{pg_port}/{pg_db}')
+    engine = create_engine(f'postgresql://{pg_user}:{pg_pass}@{pg_host}:{pg_port}/{pg_db}')
 
 
 

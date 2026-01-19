@@ -1,3 +1,26 @@
 https://www.youtube.com/watch?v=lP8xXebHmuE&list=PL3MmuxUbc_hJed7dXYoJw8DoCuVHhGEQb&index=13 
-@ 56:30
-https://github.com/DataTalksClub/data-engineering-zoomcamp/blob/main/01-docker-terraform/docker-sql/04-postgres-docker.md
+@ start from 1:36:50
+https://github.com/DataTalksClub/data-engineering-zoomcamp/blob/main/01-docker-terraform/docker-sql/06-ingestion-script.md
+
+To start up the docker container, with Postgres database:
+docker run -it --rm   -e POSTGRES_USER="root"   -e POSTGRES_PASSWORD="root"   -e POSTGRES_DB="ny_taxi"   -v ny_taxi_postgres_data:/var/lib/postgresql   -p 5432:5432   postgres:18
+if you dont want it to persist,
+but if you do, first run
+docker run -it \
+  --name postgresnytaxi \
+  -e POSTGRES_USER="root" \
+  -e POSTGRES_PASSWORD="root" \
+  -e POSTGRES_DB="ny_taxi" \
+  -v ny_taxi_postgres_data:/var/lib/postgresql/data \
+  -p 5432:5432 \
+  postgres:18
+then after that you can run --> docker start -ai postgres-ny-taxi
+to stop it, run docker stop postgres-ny-taxi
+
+
+You have decided to run the second command that persists, so from now in run
+docker start -ai postgresnytaxi
+and press Ctrl + C to stop 
+
+In 2nd terminal, run uv run pgcli -h localhost -p 5432 -u root -d ny_taxi to interact with db,
+type \dt to see the tables, use sql to query data/
