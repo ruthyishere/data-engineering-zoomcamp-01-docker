@@ -24,3 +24,12 @@ and press Ctrl + C to stop
 
 In 2nd terminal, run uv run pgcli -h localhost -p 5432 -u root -d ny_taxi to interact with db,
 type \dt to see the tables, use sql to query data/
+
+
+uv run python ingest_data.py \
+  --user=root \
+  --password=root \
+  --host=localhost \
+  --port=5432 \
+  --db=ny_taxi \
+  --table=yellow_taxi_trips
