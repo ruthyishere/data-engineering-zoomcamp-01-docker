@@ -1,9 +1,36 @@
+docker network create <name>
+docker network ls
+docker network inspect <name>
+
 docker run -it --rm \
+  --name pgdatabase \
+  -e POSTGRES_USER="root" \
+  -e POSTGRES_PASSWORD="root" \
+  -e POSTGRES_DB="ny_taxi" \
+  -v ny_taxi_postgres_data:/var/lib/postgresql \
+  -p 5432:5432 \
+  --network=pg-network \
+  postgres:18
+
+# Error - pgAdmin UI blank; no log in page. 
+docker run -it \
+  -e PGADMIN_DEFAULT_EMAIL="admin@admin.com" \
+  -e PGADMIN_DEFAULT_PASSWORD="root" \
+  -v pgadmin_data:/var/lib/pgadmin \
+  -p 8085:80 \
+  --network=pg-network \
+  --name pgadmin \
+  dpage/pgadmin4
+  
+
+docker run -it --rm \
+    --network=pg-network \
     taxi_ingest:v001 \
     --pg-user=root \
     --pg-pass=root \
-    --pg-host=localhost \
+    --pg-host=pgdatabase \
     --pg-port=5432 \
     --pg-db=ny_taxi \
     --tablename=yellow_taxi_trips_2021_1 \
-    --chunksize=100000
+    --chunksize=100000 
+    
