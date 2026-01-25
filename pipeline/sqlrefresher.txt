@@ -1,0 +1,19 @@
+SELECT 
+	tpep_pickup_datetime,
+	tpep_dropoff_datetime,
+	total_amount,
+	CONCAT(p."Borough", ' / ', p."Zone"),
+	CONCAT(d."Borough", ' / ', d."Zone")
+FROM 
+	yellow_taxi_trips_2021_1 t 
+	join taxi_zones p 
+		ON t."PULocationID" = p."LocationID"
+	JOIN taxi_zones d
+		ON t."DOLocationID" = d."LocationID"
+	-- taxi_zones p,
+	-- taxi_zones d
+
+LIMIT 100;
+
+-- WHERE
+-- 	t."PULocationID" = p."LocationID" AND t."DOLocationID" = d."LocationID"

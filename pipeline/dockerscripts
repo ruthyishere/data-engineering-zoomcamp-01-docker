@@ -1,38 +1,40 @@
-# ===== CLEANUP (Run this first to start fresh) =====
-docker stop pgdatabase pgadmin 2>/dev/null
-docker rm pgdatabase pgadmin 2>/dev/null
-docker volume rm ny_taxi_postgres_data pgadmin_data 2>/dev/null
-docker network rm pg-network 2>/dev/null
-
-# ===== NETWORK SETUP =====
-docker network create pg-network
+docker network create <name>
 docker network ls
-docker network inspect pg-network
+docker network inspect <name>
 
-# ===== POSTGRES DATABASE =====
-docker run -d \
+docker run -it --rm \
   --name pgdatabase \
   -e POSTGRES_USER="root" \
   -e POSTGRES_PASSWORD="root" \
   -e POSTGRES_DB="ny_taxi" \
-  -v ny_taxi_postgres_data:/var/lib/postgresql/data \
+  -v ny_taxi_postgres_data:/var/lib/postgresql \
   -p 5432:5432 \
   --network=pg-network \
   postgres:18
 
-# ===== PGADMIN (Fixed for Codespaces) =====
+# Error - pgAdmin UI blank; no log in page. 
+# docker run -it \
+#   -e PGADMIN_DEFAULT_EMAIL="admin@admin.com" \
+#   -e PGADMIN_DEFAULT_PASSWORD="root" \
+#   -v pgadmin_data:/var/lib/pgadmin \
+#   -p 8085:80 \
+#   --network=pg-network \
+#   --name pgadmin \
+#   dpage/pgadmin4
+
+
 docker run -d \
   -e PGADMIN_DEFAULT_EMAIL="admin@admin.com" \
   -e PGADMIN_DEFAULT_PASSWORD="root" \
-  -e PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION="False" \
-  -e PGADMIN_CONFIG_WTF_CSRF_CHECK_DEFAULT="False" \
+  -e PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION="False" \ # Disable enhanced cookie protection
+  -e PGADMIN_CONFIG_WTF_CSRF_CHECK_DEFAULT="False" \ # Disable CSRF protection
   -v pgadmin_data:/var/lib/pgadmin \
   -p 8085:80 \
   --network=pg-network \
   --name pgadmin \
   dpage/pgadmin4
+  
 
-# ===== DATA INGESTION =====
 docker run -it --rm \
     --network=pg-network \
     taxi_ingest:v001 \
@@ -42,16 +44,5 @@ docker run -it --rm \
     --pg-port=5432 \
     --pg-db=ny_taxi \
     --tablename=yellow_taxi_trips_2021_1 \
-    --chunksize=100000
-
-# ===== USEFUL COMMANDS =====
-# View running containers
-docker ps
-
-# View logs
-docker logs pgdatabase
-docker logs pgadmin
-
-# Stop everything
-docker stop pgdatabase pgadmin 
+    --chunksize=100000 
     

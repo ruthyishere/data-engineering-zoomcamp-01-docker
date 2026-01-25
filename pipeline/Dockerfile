@@ -43,5 +43,6 @@ COPY pyproject.toml .python-version uv.lock ./
 RUN uv sync --locked
 
 COPY ingest_data.py .
+COPY taxi_zone_lookup.csv .
 
 ENTRYPOINT ["python", "ingest_data.py"]

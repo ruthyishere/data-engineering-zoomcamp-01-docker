@@ -1151,6 +1151,7 @@ dependencies = [
     { name = "psycopg2-binary" },
     { name = "pyarrow" },
     { name = "sqlalchemy" },
+    { name = "tdm" },
     { name = "tqdm" },
 ]
 
@@ -1167,6 +1168,7 @@ requires-dist = [
     { name = "psycopg2-binary", specifier = ">=2.9.11" },
     { name = "pyarrow", specifier = ">=22.0.0" },
     { name = "sqlalchemy", specifier = ">=2.0.45" },
+    { name = "tdm", specifier = ">=0.1.0" },
     { name = "tqdm", specifier = ">=4.67.1" },
 ]
 
@@ -1746,6 +1748,12 @@ wheels = [
 widechars = [
     { name = "wcwidth" },
 ]
+
+[[package]]
+name = "tdm"
+version = "0.1.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/0c/6f/55e8539f99664ecd8bee62d49c158e67d14337cf4783aff662a1265ff8dd/tdm-0.1.0.tar.gz", hash = "sha256:ac34f6e49cc550dd6e13086a4e90400fccffd3b205f6c068e8700c6d82155d83", size = 27520, upload-time = "2019-01-23T09:52:57.792Z" }
 
 [[package]]
 name = "terminado"

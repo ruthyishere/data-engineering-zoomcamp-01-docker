@@ -31,6 +31,9 @@ dtype = {
     "congestion_surcharge": "float64"
 }
 
+# @click.option('--year', help='Year of the data to ingest', default=2021, type=int)
+# @click.option('--month', help='Month of the data to ingest', default=1, type=int)
+
 parse_dates = [
     "tpep_pickup_datetime",
     "tpep_dropoff_datetime"
@@ -38,17 +41,16 @@ parse_dates = [
 
 
 @click.command() # allows us to run the function from the command line
+@click.option('--filepath', help='Path to the CSV file to ingest', required=True)
 @click.option('--pg-user', help='Postgres username', default='root')
 @click.option('--pg-pass', help='Postgres password', default='root')
 @click.option('--pg-host', help='Postgres host', default='localhost')
 @click.option('--pg-port', help='Postgres port', default='5432')
 @click.option('--pg-db', help='Postgres database name', default='ny_taxi')
-@click.option('--year', help='Year of the data to ingest', default=2021, type=int)
-@click.option('--month', help='Month of the data to ingest', default=1, type=int)
 @click.option('--chunksize', help='Number of rows to process at a time', default=100000, type=int)
 @click.option('--tablename', help='Name of the table to write data to', default='yellow_taxi_data')
 
-def run (pg_user, pg_pass, pg_host, pg_port, pg_db, year, month, chunksize, tablename):
+def run (filepath, pg_user, pg_pass, pg_host, pg_port, pg_db, chunksize, tablename):
     # pg_user = "root"
     # pg_password = "root"
     # pg_host = "localhost"
@@ -62,17 +64,25 @@ def run (pg_user, pg_pass, pg_host, pg_port, pg_db, year, month, chunksize, tabl
 
     # chunksize = 100000
 
-    prefix = 'https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/'
-    url = f'{prefix}yellow_tripdata_{year:04d}-{month:02d}.csv.gz'
+    # prefix + 'yellow_tripdata_2021-01.csv.gz'
+
+    #prefix = 'https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/'
+    #url = f'{prefix}yellow_tripdata_{year:04d}-{month:02d}.csv.gz'
 
     engine = create_engine(f'postgresql://{pg_user}:{pg_pass}@{pg_host}:{pg_port}/{pg_db}')
 
-
+    # Read first row to get column names
+    df_sample = pd.read_csv(filepath, nrows=0)
+    cols = df_sample.columns.tolist()
+    
+    # Filter dtype and parse_dates to only include columns that exist
+    valid_dtype = {k: v for k, v in dtype.items() if k in cols}
+    valid_parse_dates = [d for d in parse_dates if d in cols]
 
     df_iter = pd.read_csv(
-        prefix + 'yellow_tripdata_2021-01.csv.gz',
-        dtype=dtype,
-        parse_dates=parse_dates,
+        filepath,
+        dtype=valid_dtype,
+        parse_dates=valid_parse_dates,
         iterator=True,
         chunksize=chunksize,
     )
