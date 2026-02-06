@@ -203,6 +203,8 @@ Navigate through: **Execution → Outputs → extract → outputFiles → [filen
 
 ---
 
+![alt text](image.png)
+
 ## Question 2: Understanding Variables and Rendering
 
 ### Concept: Template Variables vs Rendered Values
